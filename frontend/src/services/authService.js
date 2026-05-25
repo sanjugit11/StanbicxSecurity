@@ -23,6 +23,14 @@ API.interceptors.response.use(
 
 // ── Auth Endpoints ────────────────────────────────
 
+/** POST /auth/create-session */
+export const createSession = (phone) =>
+  API.post('/auth/create-session', { phone })
+
+/** GET /auth/check-session/:sessionId */
+export const checkSession = (sessionId) =>
+  API.get(`/auth/check-session/${sessionId}`)
+
 /** POST /auth/send-telegram-otp */
 export const sendTelegramOTP = (identifier) =>
   API.post('/auth/send-telegram-otp', { identifier })
@@ -30,6 +38,14 @@ export const sendTelegramOTP = (identifier) =>
 /** POST /auth/verify-telegram-otp */
 export const verifyTelegramOTP = (identifier, otp) =>
   API.post('/auth/verify-telegram-otp', { identifier, otp })
+
+/** POST /auth/verify-otp */
+export const verifyOTP = (sessionId, otp) =>
+  API.post('/auth/verify-otp', { sessionId, otp })
+
+/** POST /auth/send-otp */
+export const resendSessionOTP = (sessionId) =>
+  API.post('/auth/send-otp', { sessionId })
 
 /** POST /auth/register */
 export const registerUser = (payload) =>
