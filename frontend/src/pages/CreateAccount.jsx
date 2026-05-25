@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { User, Send, Lock, ArrowRight, Smartphone, MessageCircle, ShieldCheck } from 'lucide-react'
+import { User, Send, Lock, ArrowRight, Smartphone, MessageCircle, CheckCircle2 } from 'lucide-react'
 import { useTame } from '../components/TameNotification'
 import { addNotification } from '../services/storageService'
+import { sendTelegramOTP } from '../services/authService'
 
 // Generate a random 6-digit OTP (stored in sessionStorage for demo verification)
 const genOTP = () => Math.floor(100000 + Math.random() * 900000).toString()
@@ -16,40 +17,39 @@ export default function CreateAccount() {
   const [agreed, setAgreed] = useState(false)
 
   const handleSend = async () => {
-    const val = identifier.trim()
-    if (!val) { setError('Enter your Telegram username or phone number'); return }
-    if (val.startsWith('@') && val.length < 4) { setError('Username too short'); return }
-    if (!agreed) { setError('Please accept the terms & conditions'); return }
-    setError('')
-    setLoading(true)
+    const val = identifier.trim();
+    if (!val) { setError('Enter your Telegram username or phone number'); return; }
+    if (val.startsWith('@') && val.length < 4) { setError('Username too short'); return; }
+    if (!agreed) { setError('Please accept the terms & conditions'); return; }
+    setError('');
+    setLoading(true);
+    try {
+      // Call backend to send OTP via Telegram bot
+      await sendTelegramOTP(val);
+      // Store identifier and mode for later steps
+      sessionStorage.setItem('sxs_identifier', val);
+      sessionStorage.setItem('sxs_otp_mode', 'signup');
+      sessionStorage.setItem('sxs_otp_ts', Date.now().toString());
 
-    await new Promise(r => setTimeout(r, 1100)) // simulated network delay
+      addNotification({
+        type: 'telegram',
+        title: 'OTP Sent',
+        message: `Telegram OTP dispatched to ${val}`,
+      });
 
-    // Generate OTP and store for verification
-    const otp = genOTP()
-    sessionStorage.setItem('sxs_identifier', val)
-    sessionStorage.setItem('sxs_otp',        otp)
-    sessionStorage.setItem('sxs_otp_mode',   'signup')
-    sessionStorage.setItem('sxs_otp_ts',     Date.now().toString())
+      push({
+        type: 'telegram',
+        title: 'OTP Sent via Telegram',
+        message: `Please check your Telegram app for the verification code.`,
+        duration: 20000,
+      });
 
-    // Persist notification
-    addNotification({
-      type: 'telegram',
-      title: 'Registration OTP Sent',
-      message: `Registration code dispatched to ${val} via @StanbicXBot`
-    })
-
-    // Show TAME toast with OTP preview (demo mode)
-    push({
-      type: 'telegram',
-      title: 'OTP Sent via Telegram',
-      message: `Demo mode: your registration code is shown below`,
-      otp,
-      duration: 20000,
-    })
-
-    setLoading(false)
-    navigate('/otp')
+      navigate('/otp');
+    } catch (e) {
+      setError(e.message || 'Failed to send OTP');
+    } finally {
+      setLoading(false);
+    }
   }
 
   const handleKeyDown = (e) => { if (e.key === 'Enter') handleSend() }

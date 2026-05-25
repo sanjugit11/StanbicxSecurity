@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { verifyTelegramOTP, sendTelegramOTP } from '../services/authService'
 import { useNavigate } from 'react-router-dom'
 import { MessageCircle, RefreshCw, ChevronLeft, CheckCircle2, ShieldCheck } from 'lucide-react'
 import { useTame } from '../components/TameNotification'
@@ -61,21 +62,8 @@ export default function OTPVerification() {
     if (code.length < 6) { setError('Please enter the complete 6-digit OTP'); return }
     setLoading(true); setError('')
     try {
-      const storedOtp = sessionStorage.getItem('sxs_otp')
-      const storedTs = sessionStorage.getItem('sxs_otp_ts')
-
-      // Check OTP match
-      if (code !== storedOtp) {
-        throw new Error('Invalid OTP. Please check the code and try again.')
-      }
-
-      // Check expiration (10 minutes)
-      const elapsedSeconds = Math.floor((Date.now() - parseInt(storedTs || '0', 10)) / 1000)
-      if (elapsedSeconds > 600) {
-        throw new Error('OTP has expired (10 minutes limit). Please resend.')
-      }
-
-      await new Promise((r) => setTimeout(r, 1200))
+      // Call backend to verify OTP
+      await verifyTelegramOTP(identifier, code)
       setSuccess(true)
 
       push({
@@ -84,13 +72,13 @@ export default function OTPVerification() {
         message: mode === 'signup' 
           ? 'Account created successfully! Proceeding to setup your profile details.'
           : 'Welcome back! Granting access to your dashboard.',
-        duration: 4000
+        duration: 4000,
       })
 
       addNotification({
         type: 'success',
         title: mode === 'signup' ? 'Account Created' : 'Access Granted',
-        message: `Session verified successfully for ${identifier}`
+        message: `Session verified successfully for ${identifier}`,
       })
 
       setTimeout(() => {
@@ -101,7 +89,7 @@ export default function OTPVerification() {
         }
       }, 1200)
     } catch (e) {
-      setError(e.message)
+      setError(e.message || 'Failed to verify OTP')
     } finally {
       setLoading(false)
     }
@@ -110,31 +98,27 @@ export default function OTPVerification() {
   const handleResend = async () => {
     setResending(true); setError('')
     try {
-      const newOtp = Math.floor(100000 + Math.random() * 900000).toString()
-      sessionStorage.setItem('sxs_otp', newOtp)
-      sessionStorage.setItem('sxs_otp_ts', Date.now().toString())
-
-      await new Promise((r) => setTimeout(r, 800))
+      // Resend OTP via backend
+      await sendTelegramOTP(identifier)
       setTimer(EXPIRY)
       setOtp(['', '', '', '', '', ''])
-      
+
       push({
         type: 'telegram',
-        title: 'New OTP Dispatched',
-        message: `Demo mode: new code is shown below`,
-        otp: newOtp,
+        title: 'OTP Resent',
+        message: `A fresh OTP was sent to ${identifier}`,
         duration: 20000,
       })
 
       addNotification({
         type: 'telegram',
         title: 'OTP Resent',
-        message: `A fresh OTP was sent to ${identifier}`
+        message: `A fresh OTP was sent to ${identifier}`,
       })
 
       refs.current[0]?.focus()
     } catch (e) {
-      setError(e.message)
+      setError(e.message || 'Failed to resend OTP')
     } finally {
       setResending(false)
     }
