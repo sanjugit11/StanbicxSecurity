@@ -9,6 +9,7 @@ import BiometricsSetup from './pages/BiometricsSetup'
 import KYCVerification from './pages/KYCVerification'
 import DeviceDashboard from './pages/DeviceDashboard'
 import SecuritySettings from './pages/SecuritySettings'
+import TokenManagement from './pages/TokenManagement'
 
 export default function App() {
   return (
@@ -25,6 +26,7 @@ export default function App() {
           <Route path="/kyc" element={<KYCVerification />} />
           <Route path="/devices" element={<DeviceDashboard />} />
           <Route path="/security" element={<SecuritySettings />} />
+          <Route path="/token-management" element={<TokenManagement />} />
         </Routes>
       </BrowserRouter>
     </TameProvider>

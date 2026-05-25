@@ -87,9 +87,9 @@ export default function BiometricsSetup() {
 
         {/* Steps */}
         <div className="steps" style={{ marginBottom: 28 }}>
-          {['Telegram', 'OTP', 'Profile', 'Passcode', 'Biometrics', 'KYC'].map((s, i) => (
-            <div key={s} className={`step-item ${i < 4 ? 'done' : i === 4 ? 'active' : ''}`}>
-              <div className="step-circle">{i < 4 ? <CheckCircle2 size={14} /> : i + 1}</div>
+          {['Profile Setup', 'Passcode', 'Biometrics', 'KYC'].map((s, i) => (
+            <div key={s} className={`step-item ${i < 2 ? 'done' : i === 2 ? 'active' : ''}`}>
+              <div className="step-circle">{i < 2 ? <CheckCircle2 size={14} /> : i + 1}</div>
               <span className="step-label">{s}</span>
             </div>
           ))}

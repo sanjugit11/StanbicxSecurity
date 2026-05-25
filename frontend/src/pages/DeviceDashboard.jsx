@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { Monitor, Smartphone, Tablet, Trash2, ShieldCheck, MapPin, Clock, AlertTriangle, Plus, Settings } from 'lucide-react'
+import { Monitor, Smartphone, Tablet, Trash2, ShieldCheck, MapPin, Clock, AlertTriangle, Plus, Settings, Layers } from 'lucide-react'
 import { revokeDevice } from '../services/authService'
 
 const MOCK_DEVICES = [
@@ -94,7 +94,8 @@ export default function DeviceDashboard() {
         <div className="nav-links">
           <Link to="/devices" className="nav-link active"><Monitor size={15} />Devices</Link>
           <Link to="/security" className="nav-link"><Settings size={15} />Security</Link>
-          <Link to="/kyc" className="nav-link"><ShieldCheck size={15} />KYC</Link>
+          <Link to="/account-info" className="nav-link"><ShieldCheck size={15} />KYC</Link>
+          <Link to="/token-management" className="nav-link"><Layers size={15} />Contract Interaction</Link>
         </div>
       </nav>
 

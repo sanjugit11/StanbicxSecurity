@@ -85,7 +85,14 @@ export default function AccountInfo() {
         
         {/* Back */}
         <button
-          onClick={() => navigate('/login')}
+          onClick={() => {
+            const hasUser = localStorage.getItem('sxs_user');
+            if (hasUser) {
+              navigate('/devices');
+            } else {
+              navigate('/login');
+            }
+          }}
           className="btn btn-ghost btn-sm"
           style={{ width: 'auto', marginBottom: 20 }}
         >
@@ -103,9 +110,9 @@ export default function AccountInfo() {
 
         {/* Steps */}
         <div className="steps" style={{ marginBottom: 28 }}>
-          {['Telegram', 'OTP', 'Profile', 'Passcode', 'Biometrics', 'KYC'].map((s, i) => (
-            <div key={s} className={`step-item ${i < 2 ? 'done' : i === 2 ? 'active' : ''}`}>
-              <div className="step-circle">{i < 2 ? <CheckCircle2 size={14} /> : i + 1}</div>
+          {['Profile Setup', 'Passcode', 'Biometrics', 'KYC'].map((s, i) => (
+            <div key={s} className={`step-item ${i < 0 ? 'done' : i === 0 ? 'active' : ''}`}>
+              <div className="step-circle">{i < 0 ? <CheckCircle2 size={14} /> : i + 1}</div>
               <span className="step-label">{s}</span>
             </div>
           ))}

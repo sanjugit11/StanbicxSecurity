@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom'
 import {
   ShieldCheck, Bell, Lock, Fingerprint, Smartphone,
   LogOut, ChevronRight, Settings, Monitor, KeyRound,
-  AlertTriangle, Globe, Eye, EyeOff, RefreshCw, Trash2
+  AlertTriangle, Globe, Eye, EyeOff, RefreshCw, Trash2, Layers
 } from 'lucide-react'
 import { updateSecuritySettings, logoutAllSessions } from '../services/authService'
 
@@ -112,7 +112,6 @@ export default function SecuritySettings() {
 
   return (
     <div className="page-wide">
-      {/* Nav */}
       <nav className="nav">
         <div className="nav-brand">
           <div className="icon-badge" style={{ width: 36, height: 36 }}>
@@ -123,7 +122,8 @@ export default function SecuritySettings() {
         <div className="nav-links">
           <Link to="/devices" className="nav-link"><Monitor size={15} />Devices</Link>
           <Link to="/security" className="nav-link active"><Settings size={15} />Security</Link>
-          <Link to="/kyc" className="nav-link"><ShieldCheck size={15} />KYC</Link>
+          <Link to="/account-info" className="nav-link"><ShieldCheck size={15} />KYC</Link>
+          <Link to="/token-management" className="nav-link"><Layers size={15} />Contract Interaction</Link>
         </div>
       </nav>
 

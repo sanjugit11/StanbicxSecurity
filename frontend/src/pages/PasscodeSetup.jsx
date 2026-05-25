@@ -111,9 +111,9 @@ export default function PasscodeSetup() {
 
         {/* Steps */}
         <div className="steps" style={{ marginBottom: 28 }}>
-          {['Telegram', 'OTP', 'Profile', 'Passcode', 'Biometrics', 'KYC'].map((s, i) => (
-            <div key={s} className={`step-item ${i < 3 ? 'done' : i === 3 ? 'active' : ''}`}>
-              <div className="step-circle">{i < 3 ? <CheckCircle2 size={14} /> : i + 1}</div>
+          {['Profile Setup', 'Passcode', 'Biometrics', 'KYC'].map((s, i) => (
+            <div key={s} className={`step-item ${i < 1 ? 'done' : i === 1 ? 'active' : ''}`}>
+              <div className="step-circle">{i < 1 ? <CheckCircle2 size={14} /> : i + 1}</div>
               <span className="step-label">{s}</span>
             </div>
           ))}
